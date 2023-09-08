@@ -21,7 +21,8 @@
     <button type="submit" class="btn btn-primary" @onclick="@SaveNoteAsync">Submit</button>
 </form>
 
-@code {
+@code
+{
     Note note = new();
 
     async Task SaveNoteAsync()
