@@ -1,0 +1,33 @@
+@page "/"
+
+@using Microsoft.EntityFrameworkCore
+@using SecureNote.Models
+@using SecureNote.Data
+@inject IDbContextFactory<SecureNoteContext> DbFactory
+
+<PageTitle>Notes</PageTitle>
+
+<h1>Notes</h1>
+
+<form>
+    <div class="mb-3">
+        <label class="form-label">Title</label>
+        <input type="text" class="form-control" @bind="note.Title">
+    </div>
+    <div class="mb-3">
+        <label class="form-label">Content</label>
+        <textarea class="form-control" rows="10" @bind="note.Content" />
+    </div>
+    <button type="submit" class="btn btn-primary" @onclick="@SaveNoteAsync">Submit</button>
+</form>
+
+@code {
+    Note note = new();
+
+    async Task SaveNoteAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Add(note);
+        await context.SaveChangesAsync();
+    }
+}
