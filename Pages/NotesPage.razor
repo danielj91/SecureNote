@@ -12,6 +12,7 @@
 <div class="container">
     <div class="row">
         <div class="col-2">
+            <button class="mb-2" @onclick="CreateNewNote">New Note</button>
             <ul class="list-group">
                 @foreach (var item in notesList)
                 {
@@ -19,6 +20,7 @@
                 }
             </ul>
         </div>
+
         <div class="col">
             <form>
                 <div class="mb-3">
@@ -29,7 +31,8 @@
                     <label class="form-label">Content</label>
                     <textarea class="form-control" rows="10" @bind="note.Content" />
                 </div>
-                <button type="submit" class="btn btn-primary" @onclick="SaveNoteAsync">Submit</button>
+                <button class="btn btn-primary" @onclick="SaveNoteAsync">Save</button>
+                <button class="btn btn-danger" @onclick="DeleteNoteAsync">Delete</button>
             </form>
         </div>
     </div>
@@ -41,18 +44,14 @@
     Note Note
     {
         get => note;
-        set
-        {
-            note = value;
-            Console.WriteLine(value);
-        }
+        set => note = value;
     }
     List<Note> notesList = new();
 
-    protected override void OnInitialized()
+    protected override Task OnInitializedAsync()
     {
         GetAllNotesAsync();
-        base.OnInitialized();
+        return base.OnInitializedAsync();
     }
 
     async Task SaveNoteAsync()
@@ -66,5 +65,19 @@
     {
         using var context = DbFactory.CreateDbContext();
         notesList = context.Notes.ToList();
+    }
+
+    void CreateNewNote()
+    {
+        Note = new();
+    }
+
+    async Task DeleteNoteAsync()
+    {
+        using var context = DbFactory.CreateDbContext();
+        context.Remove(note);
+        await context.SaveChangesAsync();
+        notesList.Remove(note);
+        Note = new();
     }
 }
