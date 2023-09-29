@@ -16,7 +16,10 @@
             <ul class="list-group">
                 @foreach (var item in notesList)
                 {
-                    <li class="list-group-item" @onclick="() => note = item">@item.Title</li>
+                    <li class="@(item.Id == activeNoteId ? "list-group-item active" : "list-group-item")"
+                        @onclick="() => Note = item">
+                        @item.Title
+                    </li>
                 }
             </ul>
         </div>
@@ -44,13 +47,22 @@
     Note Note
     {
         get => note;
-        set => note = value;
+        set
+        {
+            note = value;
+            activeNoteId = note.Id;
+        }
     }
     List<Note> notesList = new();
+    int activeNoteId = 0;
 
     protected override Task OnInitializedAsync()
     {
         GetAllNotesAsync();
+        if (notesList.Count > 0)
+        {
+            activeNoteId = notesList[0].Id;
+        }
         return base.OnInitializedAsync();
     }
 
