@@ -4,8 +4,9 @@ namespace SecureNote.Models;
 
 public class Note
 {
-    public int Id { get; set; }
-    [Column(TypeName = "varchar(200)")]
-    public string Title { get; set; }
-    public string Content { get; set; }
+    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+    public Guid Id { get; set; }
+    [Column(TypeName = "varchar(300)")]
+    public string Title { get; set; } = string.Empty;
+    public string Content { get; set; } = string.Empty;
 }

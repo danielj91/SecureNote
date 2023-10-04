@@ -1,9 +1,9 @@
 @page "/"
-
+@attribute [Authorize]
 @using Microsoft.EntityFrameworkCore
 @using SecureNote.Models
 @using SecureNote.Data
-@inject IDbContextFactory<SecureNoteContext> DbFactory
+@inject IDbContextFactory<AppDbContext> DbFactory
 
 <PageTitle>Notes</PageTitle>
 
@@ -54,7 +54,7 @@
         }
     }
     List<Note> notesList = new();
-    int activeNoteId = 0;
+    Guid activeNoteId = new();
 
     protected override Task OnInitializedAsync()
     {

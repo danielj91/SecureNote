@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SecureNote.Data;
 
@@ -8,8 +11,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 
 // Postgres setup
-builder.Services.AddDbContextFactory<SecureNoteContext>(options =>
-            options.UseNpgsql(builder.Configuration.GetConnectionString("SecureNoteConnection")));
+builder.Services.AddDbContextFactory<AppDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SecureNoteConnection")));
+builder.Services.AddDefaultIdentity<IdentityUser>()
+    .AddEntityFrameworkStores<AppDbContext>();
+builder.Services.AddScoped<AuthenticationStateProvider, ServerAuthenticationStateProvider>();
 
 var app = builder.Build();
 
@@ -26,6 +32,11 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 
 app.UseRouting();
+
+// Auth setup
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapControllers();
 
 app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
